@@ -1,7 +1,7 @@
 import L from 'leaflet';
-import NetworkPin from '../assets/network-blue.gif';
+import NetworkPin from '../assets/network-pinner.png';
 
 export const PinNetworkIcon = L.icon({
   iconUrl: NetworkPin,
-  iconSize: [32, 32],
+  iconSize: [24, 32],
 });
