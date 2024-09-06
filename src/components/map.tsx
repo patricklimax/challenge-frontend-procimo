@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Network } from '../types/network';
 import { useEffect, useState } from 'react';
 import { XIcon } from 'lucide-react';
+import { ZoomInOut } from './map-zoom';
 
 export const Map = () => {
   //1 state para armazenar as Networks
@@ -14,6 +15,8 @@ export const Map = () => {
   //2 modals para info network e stations
   const [modalNetworkByContry, setModalNetworkByContry] = useState(false);
   const [modalStationByNetwork, setModalStationByNetwork] = useState(false);
+
+  const [zoomMap, setZoomMap] = useState<number>(3);
 
   //1 função para pegar as Networks
   const getNetworks = async () => {
@@ -28,15 +31,19 @@ export const Map = () => {
     }
   };
 
-  const showModals = () => {
+  const clickNetworkMarker = () => {
     setModalNetworkByContry(true);
     setModalStationByNetwork(true);
+    setZoomMap(zoomMap + 10);
   };
+
   const closeModalNetwork = () => {
     setModalNetworkByContry(false);
+    setZoomMap(zoomMap);
   };
   const closeModalStation = () => {
     setModalStationByNetwork(false);
+    setZoomMap(zoomMap);
   };
 
   //1 pegar as estações sempre que inicializar a aplicação
@@ -47,8 +54,8 @@ export const Map = () => {
   return (
     <MapContainer
       className="relative h-[calc(100vh-16px)] w-full rounded-md antialiased"
-      center={[35.505, 0.54]}
-      zoom={2}
+      center={[-3.7321944, -38.510347]}
+      zoom={zoomMap}
       scrollWheelZoom={true}
     >
       <TileLayer
@@ -61,7 +68,7 @@ export const Map = () => {
           key={network.id}
           position={[network.location.latitude, network.location.longitude]}
           icon={PinNetworkIcon}
-          eventHandlers={{ click: showModals }}
+          eventHandlers={{ click: clickNetworkMarker }}
         >
           <Tooltip>
             <div className="rounded-md border px-2 py-1 text-center">
@@ -73,7 +80,8 @@ export const Map = () => {
           </Tooltip>
         </Marker>
       ))}
-      // todo: componentizar esse item
+      {/* // todo: componentizar esse item */}
+      {/* // todo: Na componetização será necessário informações da network - usar Zustand (ver uso) */}
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
         {/* modal com a quantidade de redes por país */}
         {modalNetworkByContry && (
@@ -125,6 +133,8 @@ export const Map = () => {
           </div>
         )}
       </div>
+
+      <ZoomInOut zoom={zoomMap} />
     </MapContainer>
   );
 };
