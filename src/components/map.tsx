@@ -1,7 +1,7 @@
-import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
-import { PinNetworkIcon } from './pin-network';
+// import { PinNetworkIcon } from './pin-network';
 import axios from 'axios';
 import { Network } from '../types/network';
 import { useEffect, useState } from 'react';
@@ -9,9 +9,10 @@ import { XIcon } from 'lucide-react';
 import { ZoomInOut } from './map-zoom';
 import { CenterMap } from './map-center';
 import { latLng, LatLng } from 'leaflet';
+import { NetworkMarker } from './network-marker';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
-const initialZoom = 3
+const initialZoom = 3;
 
 export const Map = () => {
   //1 state para armazenar as Networks
@@ -43,16 +44,16 @@ export const Map = () => {
     setCenterMap(latLng(latitude, longitude));
   };
 
-  const clickNetworkMarker = () => {
+  const clickNetworkMarker = (network: Network) => {
     setModalNetworkByContry(true);
     setModalStationByNetwork(true);
     setZoomMap(zoomMap + 10);
 
     // info: Paris
-    const latTest = 48.856614; //todo
-    const longTest = 2.3522219; //todo
+    // const latTest = 48.856614; //todo
+    // const longTest = 2.3522219; //todo
     //recebendo as coordenadas de Paris para teste
-    changeCenterMap(latTest, longTest); //todo: mandar as coordenadas da network clicada
+    changeCenterMap(network.location.latitude, network.location.longitude); //todo: mandar as coordenadas da network clicada
   };
 
   const closeModalNetwork = () => {
@@ -84,22 +85,13 @@ export const Map = () => {
       />
       {/* renderizar marcadores de rede no mapa */}
       {networks.map((network) => (
-        <Marker
+        <NetworkMarker
           key={network.id}
-          position={[network.location.latitude, network.location.longitude]}
-          icon={PinNetworkIcon}
-          eventHandlers={{ click: clickNetworkMarker }}
-        >
-          <Tooltip>
-            <div className="rounded-md border px-2 py-1 text-center">
-              <p className="font-semibold">
-                Country - {network.location.country}
-              </p>
-              <p className="mt-2">{network.name}</p>
-            </div>
-          </Tooltip>
-        </Marker>
+          networkData={network}
+          onClick={clickNetworkMarker}
+        />
       ))}
+
       {/* // todo: componentizar esse item */}
       {/* // todo: Na componetização será necessário informações da network - usar Zustand (ver uso) */}
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
