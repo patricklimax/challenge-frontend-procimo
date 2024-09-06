@@ -7,6 +7,11 @@ import { Network } from '../types/network';
 import { useEffect, useState } from 'react';
 import { XIcon } from 'lucide-react';
 import { ZoomInOut } from './map-zoom';
+import { CenterMap } from './map-center';
+import { latLng, LatLng } from 'leaflet';
+
+const initialCenterMap = latLng(-3.7321944, -38.510347);
+const initialZoom = 3
 
 export const Map = () => {
   //1 state para armazenar as Networks
@@ -16,7 +21,9 @@ export const Map = () => {
   const [modalNetworkByContry, setModalNetworkByContry] = useState(false);
   const [modalStationByNetwork, setModalStationByNetwork] = useState(false);
 
-  const [zoomMap, setZoomMap] = useState<number>(3);
+  // zoom e centro do mapa
+  const [zoomMap, setZoomMap] = useState<number>(initialZoom);
+  const [centerMap, setCenterMap] = useState<LatLng>(initialCenterMap);
 
   //1 função para pegar as Networks
   const getNetworks = async () => {
@@ -31,19 +38,32 @@ export const Map = () => {
     }
   };
 
+  //função para alterar o centro do mapa ao clicar numa network
+  const changeCenterMap = (latitude: number, longitude: number) => {
+    setCenterMap(latLng(latitude, longitude));
+  };
+
   const clickNetworkMarker = () => {
     setModalNetworkByContry(true);
     setModalStationByNetwork(true);
     setZoomMap(zoomMap + 10);
+
+    // info: Paris
+    const latTest = 48.856614; //todo
+    const longTest = 2.3522219; //todo
+    //recebendo as coordenadas de Paris para teste
+    changeCenterMap(latTest, longTest); //todo: mandar as coordenadas da network clicada
   };
 
   const closeModalNetwork = () => {
     setModalNetworkByContry(false);
-    setZoomMap(zoomMap);
+    setZoomMap(initialZoom);
+    setCenterMap(initialCenterMap);
   };
   const closeModalStation = () => {
     setModalStationByNetwork(false);
-    setZoomMap(zoomMap);
+    setZoomMap(initialZoom);
+    setCenterMap(initialCenterMap);
   };
 
   //1 pegar as estações sempre que inicializar a aplicação
@@ -54,7 +74,7 @@ export const Map = () => {
   return (
     <MapContainer
       className="relative h-[calc(100vh-16px)] w-full rounded-md antialiased"
-      center={[-3.7321944, -38.510347]}
+      center={initialCenterMap}
       zoom={zoomMap}
       scrollWheelZoom={true}
     >
@@ -135,6 +155,7 @@ export const Map = () => {
       </div>
 
       <ZoomInOut zoom={zoomMap} />
+      <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
     </MapContainer>
   );
 };
