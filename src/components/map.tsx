@@ -1,15 +1,17 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
-// import { PinNetworkIcon } from './pin-network';
 import axios from 'axios';
 import { Network } from '../types/network';
 import { useEffect, useState } from 'react';
-import { XIcon } from 'lucide-react';
 import { ZoomInOut } from './map-zoom';
 import { CenterMap } from './map-center';
 import { latLng, LatLng } from 'leaflet';
 import { NetworkMarker } from './network-marker';
+import { useModalNetworkCountry } from '../stores/networks-country';
+import { useModalStationNetwork } from '../stores/stations-network';
+import { ModalStationsNetwork } from './modal-stations-network';
+import { ModalNetworksCountry } from './modal-networks-country';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
 const initialZoom = 3;
@@ -18,9 +20,17 @@ export const Map = () => {
   //1 state para armazenar as Networks
   const [networks, setNetworks] = useState<Network[]>([]);
 
-  //2 modals para info network e stations
-  const [modalNetworkByContry, setModalNetworkByContry] = useState(false);
-  const [modalStationByNetwork, setModalStationByNetwork] = useState(false);
+  const {
+    isModalOpenNetworkCountry,
+    openModalNetworkCountry,
+    closeModalNetworkCountry,
+  } = useModalNetworkCountry();
+
+  const {
+    isModalOpenStationNetwork,
+    openModalStationNetwork,
+    closeModalStationNetwork,
+  } = useModalStationNetwork();
 
   // zoom e centro do mapa
   const [zoomMap, setZoomMap] = useState<number>(initialZoom);
@@ -45,24 +55,20 @@ export const Map = () => {
   };
 
   const clickNetworkMarker = (network: Network) => {
-    setModalNetworkByContry(true);
-    setModalStationByNetwork(true);
+    openModalNetworkCountry();
+    openModalStationNetwork();
     setZoomMap(zoomMap + 10);
-
-    // info: Paris
-    // const latTest = 48.856614; //todo
-    // const longTest = 2.3522219; //todo
-    //recebendo as coordenadas de Paris para teste
-    changeCenterMap(network.location.latitude, network.location.longitude); //todo: mandar as coordenadas da network clicada
+    changeCenterMap(network.location.latitude, network.location.longitude);
   };
 
   const closeModalNetwork = () => {
-    setModalNetworkByContry(false);
+    closeModalNetworkCountry();
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
   };
+
   const closeModalStation = () => {
-    setModalStationByNetwork(false);
+    closeModalStationNetwork();
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
   };
@@ -92,44 +98,17 @@ export const Map = () => {
         />
       ))}
 
-      {/* // todo: componentizar esse item */}
-      {/* // todo: Na componetização será necessário informações da network - usar Zustand (ver uso) */}
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
         {/* modal com a quantidade de redes por país */}
-        {modalNetworkByContry && (
-          <div className="w-56 rounded-md border bg-white/75 pb-1">
-            <div className="flex w-full justify-end">
-              <XIcon
-                className="m-1 stroke-1"
-                size={18}
-                onClick={closeModalNetwork}
-              />
-            </div>
-            <div className="px-2 font-bold">
-              <p className="uppercase">BR - Brasil</p>
-              <p className="font-medium">
-                30 networks installed in the country.
-              </p>
-            </div>
-          </div>
+        {isModalOpenNetworkCountry && (
+          <ModalNetworksCountry
+            onClick={closeModalNetwork}
+          />
         )}
+
         {/* modal com a quantidade de estações por rede */}
-        {modalStationByNetwork && (
-          <div className="w-56 rounded-md border bg-white/75 pb-1">
-            <div className="flex w-full justify-end">
-              <XIcon
-                className="m-1 stroke-1"
-                size={18}
-                onClick={closeModalStation}
-              />
-            </div>
-            <div className="px-2 font-bold">
-              <p className="uppercase">Name Network</p>
-              <p className="font-medium">
-                30 stations installed in the network.
-              </p>
-            </div>
-          </div>
+        {isModalOpenStationNetwork && (
+          <ModalStationsNetwork onClick={closeModalStation} />
         )}
 
         {/* loading antes do carregamento das redes  */}
