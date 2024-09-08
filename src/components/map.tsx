@@ -7,13 +7,13 @@ import { useEffect, useState } from 'react';
 import { useModalNetworkCountry } from '../stores/networks-country';
 import { useModalStationNetwork } from '../stores/stations-network';
 import { Network } from '../types/network';
+import { Station } from '../types/station';
 import { CenterMap } from './map-center';
 import { ZoomInOut } from './map-zoom';
 import { ModalNetworksCountry } from './modal-networks-country';
 import { ModalStationsNetwork } from './modal-stations-network';
 import { NetworkMarker } from './network-marker';
 import { StationMarker } from './station-marker';
-import { Station } from '../types/station';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
 const initialZoom = 3;
@@ -38,6 +38,13 @@ export const Map = () => {
   //state para salvar dados da rede clicada, e pegar as stations
   const [networkDataSelected, setNetworkDataSelected] = useState<Station[]>([]);
   const [isStations, setIsStations] = useState(false);
+
+  const [qtyStationPerNetwork, setQtyStationPerNetwork] = useState<
+    number | null
+  >(null);
+  const [nameNetworkSelected, setNameNetworkSelected] = useState<string | null>(
+    null,
+  );
 
   const {
     isModalOpenNetworkCountry,
@@ -97,8 +104,16 @@ export const Map = () => {
       `http://api.citybik.es/v2/networks/${idNetwork}`,
     );
     const networkSelected: Network = response.data.network;
-    console.log('dados da rede selecionada', networkSelected);
+    // console.log('dados da rede selecionada', networkSelected);
     setNetworkDataSelected(networkSelected.stations);
+
+    const qtyStationPerNetwork = networkSelected.stations.length;
+    console.log('qde de estações da rede selecionda:', qtyStationPerNetwork);
+    setQtyStationPerNetwork(qtyStationPerNetwork);
+
+    const nameNetworkSelected = networkSelected.name;
+    console.log('nome da rede selecionada:', nameNetworkSelected);
+    setNameNetworkSelected(nameNetworkSelected);
   };
 
   // função para filtrar o país da network clicada
@@ -133,7 +148,7 @@ export const Map = () => {
 
   const showStationDetails = () => {
     // todo: abrir modal de detalhes da estação
-    alert('estação clicada')
+    alert('estação clicada');
   };
 
   const closeModalNetwork = () => {
@@ -199,7 +214,11 @@ export const Map = () => {
 
         {/* modal com a quantidade de estações por rede */}
         {isModalOpenStationNetwork && (
-          <ModalStationsNetwork onClick={closeModalStation} />
+          <ModalStationsNetwork
+            networkName={nameNetworkSelected}
+            qtyStations={qtyStationPerNetwork}
+            onClick={closeModalStation}
+          />
         )}
 
         {/* loading antes do carregamento das redes  */}

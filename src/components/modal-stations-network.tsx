@@ -1,10 +1,14 @@
 import { XIcon } from 'lucide-react';
 
 type ModalStationsNetworkProps = {
+  networkName: string | null
+  qtyStations: number | null
   onClick: () => void;
 };
 
 export const ModalStationsNetwork = ({
+  networkName,
+  qtyStations,
   onClick,
 }: ModalStationsNetworkProps) => {
   return (
@@ -14,9 +18,9 @@ export const ModalStationsNetwork = ({
       </div>
 
       <div className="px-2 font-bold">
-        <p className="uppercase">Network Name</p>
+        <p className="uppercase">Network: {networkName}</p>
         <p className="font-medium">
-          10 station(s) install(ed) in this network.
+          {qtyStations} station(s) install(ed) in this network.
         </p>
       </div>
     </div>
