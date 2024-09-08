@@ -14,6 +14,8 @@ import { ModalNetworksCountry } from './modal-networks-country';
 import { ModalStationsNetwork } from './modal-stations-network';
 import { NetworkMarker } from './network-marker';
 import { StationMarker } from './station-marker';
+import { useModalDetailStation } from '../stores/details-station';
+import { ModalStationDetails } from './modal-station-details';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
 const initialZoom = 3;
@@ -21,6 +23,16 @@ const initialZoom = 3;
 type NetworkPerCountryProps = {
   country: string;
   quantity: number;
+};
+
+const stationTest = {
+  id: '004f9aea9391c0a3197981c85926fdb1',
+  name: 'AUH - Marasy',
+  latitude: 24.451202,
+  longitude: 54.33451,
+  timestamp: '2024-09-08T02:13:01.681276Z',
+  free_bikes: 2,
+  empty_slots: 11,
 };
 
 export const Map = () => {
@@ -57,6 +69,12 @@ export const Map = () => {
     openModalStationNetwork,
     closeModalStationNetwork,
   } = useModalStationNetwork();
+
+  const {
+    isModalOpenDetailStation,
+    openModalDetailStation,
+    closeModalDetailStation,
+  } = useModalDetailStation();
 
   // zoom e centro do mapa
   const [zoomMap, setZoomMap] = useState<number>(initialZoom);
@@ -147,8 +165,7 @@ export const Map = () => {
   };
 
   const showStationDetails = () => {
-    // todo: abrir modal de detalhes da estação
-    alert('estação clicada');
+    openModalDetailStation();
   };
 
   const closeModalNetwork = () => {
@@ -157,6 +174,7 @@ export const Map = () => {
     closeModalNetworkCountry();
     closeModalStationNetwork();
     setIsStations(false);
+    closeModalDetailStation();
   };
 
   const closeModalStation = () => {
@@ -165,6 +183,11 @@ export const Map = () => {
     closeModalNetworkCountry();
     closeModalStationNetwork();
     setIsStations(false);
+    closeModalDetailStation();
+  };
+
+  const closeModalStationDetails = () => {
+    closeModalDetailStation();
   };
 
   //1 pegar as estações sempre que inicializar a aplicação
@@ -234,6 +257,15 @@ export const Map = () => {
           </div>
         )}
       </div>
+      // todo: mandar as informações da estação clicada
+      {isModalOpenDetailStation && (
+        <div className="absolute bottom-20 right-4 z-[1000]">
+          <ModalStationDetails
+            station={stationTest}
+            onClick={closeModalStationDetails}
+          />
+        </div>
+      )}
 
       <ZoomInOut zoom={zoomMap} />
       <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
