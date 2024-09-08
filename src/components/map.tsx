@@ -12,6 +12,8 @@ import { ZoomInOut } from './map-zoom';
 import { ModalNetworksCountry } from './modal-networks-country';
 import { ModalStationsNetwork } from './modal-stations-network';
 import { NetworkMarker } from './network-marker';
+import { StationMarker } from './station-marker';
+import { Station } from '../types/station';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
 const initialZoom = 3;
@@ -24,13 +26,18 @@ type NetworkPerCountryProps = {
 export const Map = () => {
   //1 state para armazenar as Networks
   const [networks, setNetworks] = useState<Network[]>([]);
+  //state para salvar o array de network per country
   const [networksPerCountry, setNetworksPerCountry] = useState<
     NetworkPerCountryProps[]
   >([]);
-
+  //state para salvar dados de qty of networks per country, da network clicada
   const [countrySelected, setCountrySelected] = useState<
     NetworkPerCountryProps[]
   >([]);
+
+  //state para salvar dados da rede clicada, e pegar as stations
+  const [networkDataSelected, setNetworkDataSelected] = useState<Station[]>([]);
+  const [isStations, setIsStations] = useState(false);
 
   const {
     isModalOpenNetworkCountry,
@@ -84,7 +91,15 @@ export const Map = () => {
     }
   };
 
-  
+  //req 2 - função para pegar network pelo id
+  const getNetworkById = async (idNetwork: string) => {
+    const response = await axios.get(
+      `http://api.citybik.es/v2/networks/${idNetwork}`,
+    );
+    const networkSelected: Network = response.data.network;
+    console.log('dados da rede selecionada', networkSelected);
+    setNetworkDataSelected(networkSelected.stations);
+  };
 
   // função para filtrar o país da network clicada
   const filterCountryNetworkClick = (network: Network) => {
@@ -111,18 +126,30 @@ export const Map = () => {
 
     filterCountryNetworkClick(network);
 
+    getNetworkById(network.id);
+
+    setIsStations(true);
+  };
+
+  const showStationDetails = () => {
+    // todo: abrir modal de detalhes da estação
+    alert('estação clicada')
   };
 
   const closeModalNetwork = () => {
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
     closeModalNetworkCountry();
+    closeModalStationNetwork();
+    setIsStations(false);
   };
 
   const closeModalStation = () => {
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
+    closeModalNetworkCountry();
     closeModalStationNetwork();
+    setIsStations(false);
   };
 
   //1 pegar as estações sempre que inicializar a aplicação
@@ -149,6 +176,16 @@ export const Map = () => {
           onClick={clickNetworkMarker}
         />
       ))}
+
+      {/* marcadores das estações da rede selecionada */}
+      {isStations &&
+        networkDataSelected.map((station) => (
+          <StationMarker
+            key={station.id}
+            dataStation={station}
+            onClick={showStationDetails}
+          />
+        ))}
 
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
         {/* modal com a quantidade de redes por país */}
