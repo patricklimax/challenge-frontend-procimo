@@ -5,7 +5,6 @@ import { latLng, LatLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
 import { useModalNetworkCountry } from '../stores/networks-country';
-import { useModalStationNetwork } from '../stores/stations-network';
 import { Network } from '../types/network';
 import { Station } from '../types/station';
 import { CenterMap } from './map-center';
@@ -16,6 +15,8 @@ import { NetworkMarker } from './network-marker';
 import { StationMarker } from './station-marker';
 import { useModalDetailStation } from '../stores/details-station';
 import { ModalStationDetails } from './modal-station-details';
+import { LoadingInitialCountNetwork } from './loading-initial-count-networks';
+import { useModalStationNetwork } from '../stores/stations-network';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
 const initialZoom = 3;
@@ -206,6 +207,7 @@ export const Map = () => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
       {/* renderizar marcadores de rede no mapa */}
       {networks.map((network) => (
         <NetworkMarker
@@ -225,6 +227,7 @@ export const Map = () => {
           />
         ))}
 
+      {/* área dos modais */}
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
         {/* modal com a quantidade de redes por país */}
         {isModalOpenNetworkCountry && (
@@ -246,18 +249,15 @@ export const Map = () => {
 
         {/* loading antes do carregamento das redes  */}
         {networks.length === 0 ? (
-          <div className="w-fit rounded-md bg-white/75 p-1">
-            <p className="px-1">Loading networks...</p>
-          </div>
+          <LoadingInitialCountNetwork statusphrase={'Loading networks...'} />
         ) : (
-          <div className="w-fit rounded-md bg-white/75 p-1">
-            <p className="px-1">
-              Number of networks around the world: {networks.length}
-            </p>
-          </div>
+          <LoadingInitialCountNetwork
+            statusphrase={`Number of networks around the world: ${networks.length}`}
+          />
         )}
       </div>
-      // todo: mandar as informações da estação clicada
+
+      {/* // todo: mandar as informações da estação clicada */}
       {isModalOpenDetailStation && (
         <div className="absolute bottom-20 right-4 z-[1000]">
           <ModalStationDetails
@@ -267,7 +267,10 @@ export const Map = () => {
         </div>
       )}
 
+      {/* modificar o zoom do mapa */}
       <ZoomInOut zoom={zoomMap} />
+
+      {/* modificar o centro do mapa */}
       <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
     </MapContainer>
   );
