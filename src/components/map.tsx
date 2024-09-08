@@ -1,24 +1,36 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 
-import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Network } from '../types/network';
-import { useEffect, useState } from 'react';
-import { ZoomInOut } from './map-zoom';
-import { CenterMap } from './map-center';
 import { latLng, LatLng } from 'leaflet';
-import { NetworkMarker } from './network-marker';
+import 'leaflet/dist/leaflet.css';
+import { useEffect, useState } from 'react';
 import { useModalNetworkCountry } from '../stores/networks-country';
 import { useModalStationNetwork } from '../stores/stations-network';
-import { ModalStationsNetwork } from './modal-stations-network';
+import { Network } from '../types/network';
+import { CenterMap } from './map-center';
+import { ZoomInOut } from './map-zoom';
 import { ModalNetworksCountry } from './modal-networks-country';
+import { ModalStationsNetwork } from './modal-stations-network';
+import { NetworkMarker } from './network-marker';
 
 const initialCenterMap = latLng(-3.7321944, -38.510347);
 const initialZoom = 3;
 
+type NetworkPerCountryProps = {
+  country: string;
+  quantity: number;
+};
+
 export const Map = () => {
   //1 state para armazenar as Networks
   const [networks, setNetworks] = useState<Network[]>([]);
+  const [networksPerCountry, setNetworksPerCountry] = useState<
+    NetworkPerCountryProps[]
+  >([]);
+
+  const [countrySelected, setCountrySelected] = useState<
+    NetworkPerCountryProps[]
+  >([]);
 
   const {
     isModalOpenNetworkCountry,
@@ -36,17 +48,52 @@ export const Map = () => {
   const [zoomMap, setZoomMap] = useState<number>(initialZoom);
   const [centerMap, setCenterMap] = useState<LatLng>(initialCenterMap);
 
-  //1 função para pegar as Networks
+  //req 1 - função para pegar as Networks
   const getNetworks = async () => {
     try {
       const response = await axios.get('http://api.citybik.es/v2/networks');
       const dataNetwork: Network[] = await response.data.networks;
+      // console.log('Dados Networks:', dataNetwork);
+      // console.log('Quantity Networks:', dataNetwork.length);
       setNetworks(dataNetwork);
-      console.log('Data Networks:', dataNetwork);
-      console.log('Quantity Networks:', dataNetwork.length);
+
+      // contabiliza networks por country - retorna um objeto
+      const networksPerCountry: Record<string, number> = {};
+      for (const network of dataNetwork) {
+        const country = network.location.country;
+        if (!networksPerCountry[country]) {
+          networksPerCountry[country] = 1;
+        } else {
+          networksPerCountry[country] = networksPerCountry[country] + 1;
+        }
+      }
+
+      //converte objeto anterior em array
+      const arrNetworksPerArray: NetworkPerCountryProps[] = [];
+      for (const country in networksPerCountry) {
+        arrNetworksPerArray.push({
+          country: country,
+          quantity: networksPerCountry[country],
+        });
+      }
+
+      // console.log('array de pais/networks', arrNetworksPerArray);
+      setNetworksPerCountry(arrNetworksPerArray);
     } catch (error) {
       console.log('erro:', error);
     }
+  };
+
+  
+
+  // função para filtrar o país da network clicada
+  const filterCountryNetworkClick = (network: Network) => {
+    const country = network.location.country;
+    const countryFiltered = networksPerCountry.filter(
+      (item) => item.country === country,
+    );
+    // console.log('país filtrado com qde de redes', countryFiltered);
+    setCountrySelected(countryFiltered);
   };
 
   //função para alterar o centro do mapa ao clicar numa network
@@ -57,20 +104,25 @@ export const Map = () => {
   const clickNetworkMarker = (network: Network) => {
     openModalNetworkCountry();
     openModalStationNetwork();
-    setZoomMap(zoomMap + 10);
-    changeCenterMap(network.location.latitude, network.location.longitude);
+    setZoomMap(12);
+
+    const { latitude, longitude } = network.location;
+    changeCenterMap(latitude, longitude);
+
+    filterCountryNetworkClick(network);
+
   };
 
   const closeModalNetwork = () => {
-    closeModalNetworkCountry();
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
+    closeModalNetworkCountry();
   };
 
   const closeModalStation = () => {
-    closeModalStationNetwork();
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
+    closeModalStationNetwork();
   };
 
   //1 pegar as estações sempre que inicializar a aplicação
@@ -103,6 +155,8 @@ export const Map = () => {
         {isModalOpenNetworkCountry && (
           <ModalNetworksCountry
             onClick={closeModalNetwork}
+            country={countrySelected[0].country}
+            qtyNetworks={countrySelected[0].quantity}
           />
         )}
 
