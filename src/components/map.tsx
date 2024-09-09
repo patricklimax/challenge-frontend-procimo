@@ -26,16 +26,6 @@ type NetworkPerCountryProps = {
   quantity: number;
 };
 
-// const stationTest = {
-//   id: '004f9aea9391c0a3197981c85926fdb1',
-//   name: 'AUH - Marasy',
-//   latitude: 24.451202,
-//   longitude: 54.33451,
-//   timestamp: '2024-09-08T02:13:01.681276Z',
-//   free_bikes: 2,
-//   empty_slots: 11,
-// };
-
 export const Map = () => {
   //1 state para armazenar as Networks
   const [networks, setNetworks] = useState<Network[]>([]);
@@ -130,11 +120,11 @@ export const Map = () => {
     setNetworkDataSelected(networkSelected.stations);
 
     const qtyStationPerNetwork = networkSelected.stations.length;
-    console.log('qde de estações da rede selecionda:', qtyStationPerNetwork);
+    // console.log('qde de estações da rede selecionda:', qtyStationPerNetwork);
     setQtyStationPerNetwork(qtyStationPerNetwork);
 
     const nameNetworkSelected = networkSelected.name;
-    console.log('nome da rede selecionada:', nameNetworkSelected);
+    // console.log('nome da rede selecionada:', nameNetworkSelected);
     setNameNetworkSelected(nameNetworkSelected);
   };
 
@@ -174,20 +164,11 @@ export const Map = () => {
     const stationDataSelected = networkDataSelected.find(
       (station) => station.id === idStation,
     );
-    console.log('dados da station selecionada', stationDataSelected);
+    // console.log('dados da station selecionada', stationDataSelected);
     setStationSelected(stationDataSelected);
   };
 
-  const closeModalNetwork = () => {
-    setZoomMap(initialZoom);
-    setCenterMap(initialCenterMap);
-    closeModalNetworkCountry();
-    closeModalStationNetwork();
-    setIsStations(false);
-    closeModalDetailStation();
-  };
-
-  const closeModalStation = () => {
+  const closeModalNetworkAndStation = () => {
     setZoomMap(initialZoom);
     setCenterMap(initialCenterMap);
     closeModalNetworkCountry();
@@ -233,13 +214,12 @@ export const Map = () => {
             onClick={handleClickStationDetails}
           />
         ))}
-      const stationDataSelected = stations
       {/* área dos modais */}
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
         {/* modal com a quantidade de redes por país */}
         {isModalOpenNetworkCountry && (
           <ModalNetworksCountry
-            onClick={closeModalNetwork}
+            onClick={closeModalNetworkAndStation}
             country={countrySelected[0].country}
             qtyNetworks={countrySelected[0].quantity}
           />
@@ -250,7 +230,7 @@ export const Map = () => {
           <ModalStationsNetwork
             networkName={nameNetworkSelected}
             qtyStations={qtyStationPerNetwork}
-            onClick={closeModalStation}
+            onClick={closeModalNetworkAndStation}
           />
         )}
 
