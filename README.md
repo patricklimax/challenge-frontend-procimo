@@ -147,7 +147,7 @@ Como Rodar o Projeto Localmente
 - Navegue até o diretório do projeto:
 
 ```bash
-cd nome do peojeto
+cd nome-do-projeto
 ```
 
 - Instale as dependências:
@@ -164,7 +164,7 @@ npm run dev
 
 - Acesse o projeto em `http://localhost:5173`
 
-## Rodando os testes
+## Rodando os testes (PENDENTE)
 
 Para rodar os testes, rode o seguinte comando
 
@@ -182,7 +182,3 @@ Contribuições são bem-vindas! Se você deseja sugerir melhorias ou relatar pr
 
 Este projeto está licenciado sob a MIT License
 [MIT](https://choosealicense.com/licenses/mit/)
-
-## Deployment
-
-Este projeto está hospedado na Vercel, o que permite um deployment contínuo e rápido sempre que novas alterações são feitas no repositório.
