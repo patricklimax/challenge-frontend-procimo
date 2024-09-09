@@ -56,9 +56,9 @@ Projeto foi arquitetado usando o mapa de atividades abaixo:
 [x] Abrir modal e mostrar quantidade de rede do país da rede clicada; [tarefa 1, do desafio]<br />
 ---[x] Inserir botão de fechar modal, resetando o mapa;<br />
 
---- [] Dar zoom no mapa;<br />
---- [] Alterar o centro do mapa, passando as coordenadas de rede clicada;<br />
---- [] Exibir as estações da rede clicada;<br />
+--- [x] Dar zoom no mapa;<br />
+--- [x] Alterar o centro do mapa, passando as coordenadas de rede clicada;<br />
+--- [x] Exibir as estações da rede clicada;<br />
 
 [x] Abrir modal e mostrar quantidade de estações da rede clicada; [tarefa 2, do desafio]<br />
 --- [x] Inserir botão de fechar modal, resetando o mapa;<br />
@@ -172,7 +172,6 @@ Para rodar os testes, rode o seguinte comando
   npm run test
 ```
 
-
 ## Contribuindo
 
 Contribuições são sempre bem-vindas!
@@ -187,5 +186,3 @@ Este projeto está licenciado sob a MIT License
 ## Deployment
 
 Este projeto está hospedado na Vercel, o que permite um deployment contínuo e rápido sempre que novas alterações são feitas no repositório.
-
-
