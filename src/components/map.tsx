@@ -18,7 +18,7 @@ import { ModalStationDetails } from './modal-station-details';
 import { LoadingInitialCountNetwork } from './loading-initial-count-networks';
 import { useModalStationNetwork } from '../stores/stations-network';
 
-const initialCenterMap = latLng(-3.7321944, -38.510347);
+const initialCenterMap = latLng(20.7321944, -28.510347);
 const initialZoom = 3;
 
 type NetworkPerCountryProps = {
@@ -207,7 +207,7 @@ export const Map = () => {
 
   return (
     <MapContainer
-      className="relative h-[calc(100vh-16px)] w-full rounded-md antialiased"
+      className="relative h-[calc(100vh-3rem)] w-full"
       center={initialCenterMap}
       zoom={zoomMap}
       scrollWheelZoom={true}

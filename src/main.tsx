@@ -6,9 +6,9 @@ import { Header } from './components/header.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <main className="flex min-h-screen flex-col gap-2 p-2 md:flex-row">
-      <Header />
+    <main className="w-[calc(100vw-0.5rem] h-screen antialiased">
       <App />
+      <Header />
     </main>
   </StrictMode>,
 );

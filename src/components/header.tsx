@@ -1,22 +1,34 @@
+import { Github } from 'lucide-react';
+
 export const Header = () => {
   return (
-    <header className="flex w-full flex-col items-center justify-center gap-4 rounded-md bg-slate-900 py-4 text-slate-200 md:w-56 md:gap-20">
-      <h1 className="text-center text-xl font-bold">Seja bem vindo</h1>
-      <div className="flex items-center gap-2 text-center text-2xl font-bold md:flex-col">
-        <p>Desafio</p>
-        <p>Front-end</p>
-        <p>Procimo</p>
-      </div>
-      <div>
-        <p>Autor: Patrick Lima</p>
-      </div>
-      <nav className="text-center">
-        <ul>
+    <header className="md flex w-full flex-col items-center justify-between gap-4 bg-slate-900 px-8 py-4 text-slate-200 md:h-12 md:flex-row md:gap-0 md:py-0">
+      <h1 className="text-xl font-bold">Welcome, my friend!</h1>
+      <p className="text-xl font-bold">Challenge Front-end Procimo</p>
+      <nav>
+        <ul className="flex flex-col items-center gap-4 md:flex-row">
           <li>
-            <a href="">Github @patricklimax</a>
+            <a href="">Author: Patrick Lima</a>
           </li>
           <li>
-            <a href="">Github @projeto</a>
+            <a
+              href=""
+              className="flex items-center justify-center gap-1 text-sm"
+            >
+              <span>
+                <Github size={16} />
+              </span>
+              <span className="uppercase">my github</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href=""
+              className="flex items-center justify-center gap-1 text-sm"
+            >
+              <Github size={16} />
+              <span className="uppercase">project repository</span>
+            </a>
           </li>
         </ul>
       </nav>
