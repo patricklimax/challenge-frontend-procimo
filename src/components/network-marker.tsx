@@ -1,7 +1,7 @@
 import { Marker, Tooltip } from 'react-leaflet';
 import { Network } from '../types/network';
 import { latLng } from 'leaflet';
-import { PinNetworkIcon } from './pin-network';
+import { PinNetworkIcon } from '../constants/pin-network';
 
 type NetworkMarkerProps = {
   networkData: Network;
