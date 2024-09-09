@@ -26,15 +26,15 @@ type NetworkPerCountryProps = {
   quantity: number;
 };
 
-const stationTest = {
-  id: '004f9aea9391c0a3197981c85926fdb1',
-  name: 'AUH - Marasy',
-  latitude: 24.451202,
-  longitude: 54.33451,
-  timestamp: '2024-09-08T02:13:01.681276Z',
-  free_bikes: 2,
-  empty_slots: 11,
-};
+// const stationTest = {
+//   id: '004f9aea9391c0a3197981c85926fdb1',
+//   name: 'AUH - Marasy',
+//   latitude: 24.451202,
+//   longitude: 54.33451,
+//   timestamp: '2024-09-08T02:13:01.681276Z',
+//   free_bikes: 2,
+//   empty_slots: 11,
+// };
 
 export const Map = () => {
   //1 state para armazenar as Networks
@@ -58,6 +58,9 @@ export const Map = () => {
   const [nameNetworkSelected, setNameNetworkSelected] = useState<string | null>(
     null,
   );
+
+  //state para salvar dados da station clicaca
+  const [stationSelected, setStationSelected] = useState<Station>();
 
   const {
     isModalOpenNetworkCountry,
@@ -165,8 +168,14 @@ export const Map = () => {
     setIsStations(true);
   };
 
-  const showStationDetails = () => {
+  const handleClickStationDetails = (idStation: string) => {
     openModalDetailStation();
+
+    const stationDataSelected = networkDataSelected.find(
+      (station) => station.id === idStation,
+    );
+    console.log('dados da station selecionada', stationDataSelected);
+    setStationSelected(stationDataSelected);
   };
 
   const closeModalNetwork = () => {
@@ -207,7 +216,6 @@ export const Map = () => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
       {/* renderizar marcadores de rede no mapa */}
       {networks.map((network) => (
         <NetworkMarker
@@ -216,17 +224,16 @@ export const Map = () => {
           onClick={clickNetworkMarker}
         />
       ))}
-
       {/* marcadores das estações da rede selecionada */}
       {isStations &&
         networkDataSelected.map((station) => (
           <StationMarker
             key={station.id}
             dataStation={station}
-            onClick={showStationDetails}
+            onClick={handleClickStationDetails}
           />
         ))}
-
+      const stationDataSelected = stations
       {/* área dos modais */}
       <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
         {/* modal com a quantidade de redes por país */}
@@ -256,20 +263,17 @@ export const Map = () => {
           />
         )}
       </div>
-
       {/* // todo: mandar as informações da estação clicada */}
-      {isModalOpenDetailStation && (
+      {isModalOpenDetailStation && stationSelected && (
         <div className="absolute bottom-20 right-4 z-[1000]">
           <ModalStationDetails
-            station={stationTest}
+            station={stationSelected}
             onClick={closeModalStationDetails}
           />
         </div>
       )}
-
       {/* modificar o zoom do mapa */}
       <ZoomInOut zoom={zoomMap} />
-
       {/* modificar o centro do mapa */}
       <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
     </MapContainer>

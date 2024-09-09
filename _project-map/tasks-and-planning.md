@@ -13,43 +13,49 @@ Tela inicial
 ####### NA NETWORK:
 ### hover na NETWORK:
 
-[] mostrar no modal o nome da rede
+[x] mostrar no modal o nome da rede
 --[x] componente Popup pronto do react-leafle
-[] mostrar no modal país de origem, se der
+[x] mostrar no modal país de origem, se der
 --[x] componente Popup pronto do react-leafle
 
 ### click na NETWORK:
 
 task principal
---[] abrir modal contendo quantidade de networks do país da network
---[] inserir opção de fechar modal, resetando o mapa
+--[x] abrir modal contendo quantidade de networks do país da network
+--[x] inserir opção de fechar modal, resetando o mapa
 
 task principal
---[] abrir modal contendo quantidade de stations da network clicada
---[] inserir opção de fechar modal, resetando o mapa
+--[x] abrir modal contendo quantidade de stations da network clicada
+--[x] inserir opção de fechar modal, resetando o mapa
 
 task principal
 --[] fazer sistema de busca de station
-
---[] renderizar no modal o país da network, se der
+    -- pesquisar por:
+        cidade
+        rede
+        estação
+    -- gerar lista de sugestões
+    -- ao clicar numa sugestão
+        -- dar zoom no mapa, centralizar mapa com as coordenadas da rede/estação
+--[] renderizar no modal o país da network, se der, usar uma api de dados de país
 
 Ainda no clique na Network
 --[] remover todas as marcações de rede, deixando somente da rede clicada, se der
 --[x] dar zoom no mapa ao clicar numa network
---[] mudar o ponto central do mapa
+--[x] mudar o ponto central do mapa
     -- setando as coordenadas da network clicada como ponto central
 
---[] ao clicar numa network mostrar todas as stations da network clicada
+--[x] ao clicar numa network mostrar todas as stations da network clicada
 
 ####### NA ESTAÇÃO:
 ### hover:
 
---[] mostrar "alguns" detalhes da estação: nome || network || país ao qual pertece
+--[x] mostrar "alguns" detalhes da estação: nome || network || país ao qual pertece
 
 ### click:
 
 task principal
---[] ao clicar numa station mostrar os detalhes dessa station, usar modal
+--[x] ao clicar numa station mostrar os detalhes dessa station, usar modal
 
 #####
 
