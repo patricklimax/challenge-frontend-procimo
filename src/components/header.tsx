@@ -8,11 +8,11 @@ export const Header = () => {
       <nav>
         <ul className="flex flex-col items-center gap-4 md:flex-row">
           <li>
-            <a href="">Author: Patrick Lima</a>
+            <a href="https://patricklimax.vercel.app/">Author: Patrick Lima</a>
           </li>
           <li>
             <a
-              href=""
+              href="https://github.com/patricklimax"
               className="flex items-center justify-center gap-1 text-sm"
             >
               <span>
@@ -23,7 +23,7 @@ export const Header = () => {
           </li>
           <li>
             <a
-              href=""
+              href="https://github.com/patricklimax/challenge-frontend-procimo"
               className="flex items-center justify-center gap-1 text-sm"
             >
               <Github size={16} />
