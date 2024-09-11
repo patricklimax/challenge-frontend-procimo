@@ -11,6 +11,7 @@ Tela inicial
 --[x] marcar no mapa as NETWORKS
 
 ####### NA NETWORK:
+
 ### hover na NETWORK:
 
 [x] mostrar no modal o nome da rede
@@ -29,25 +30,26 @@ task principal
 --[x] inserir opção de fechar modal, resetando o mapa
 
 task principal
---[] fazer sistema de busca de station
-    -- pesquisar por:
-        cidade
-        rede
-        estação
-    -- gerar lista de sugestões
-    -- ao clicar numa sugestão
-        -- dar zoom no mapa, centralizar mapa com as coordenadas da rede/estação
+--[] fazer sistema de busca
+-- pesquisar por:
+[x]cidade 
+[x]rede
+estação -- não incluido
+-- [x] gerar lista de sugestões
+-- [x]ao clicar numa sugestão
+-- [x]dar zoom no mapa, centralizar mapa com as coordenadas da rede/estação
 --[] renderizar no modal o país da network, se der, usar uma api de dados de país
 
 Ainda no clique na Network
 --[] remover todas as marcações de rede, deixando somente da rede clicada, se der
 --[x] dar zoom no mapa ao clicar numa network
 --[x] mudar o ponto central do mapa
-    -- setando as coordenadas da network clicada como ponto central
+-- setando as coordenadas da network clicada como ponto central
 
 --[x] ao clicar numa network mostrar todas as stations da network clicada
 
 ####### NA ESTAÇÃO:
+
 ### hover:
 
 --[x] mostrar "alguns" detalhes da estação: nome || network || país ao qual pertece
@@ -66,3 +68,16 @@ Techs para usar
 -- [x] tailwind
 -- plugin-prettier-tailwind + prettier
 -- lucide react para icones
+
+### TODO!:
+
+// Estados derivados sendo criados
+--- remover states e criar constantes para armazenar informações
+// desabitar sistema de zoom do mapa ao rolar o scroll do mouse
+// ao fechar modal da quantidade de redes por país, perguntar se reseta o mapa
+
+#### verificar o código e ajustar o que precisa ajudar
+#### componetizar input e lista de cidade/rede
+
+### criar manual do usuário na tela
+

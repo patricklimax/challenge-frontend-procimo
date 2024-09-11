@@ -17,6 +17,7 @@ import { useModalDetailStation } from '../stores/details-station';
 import { ModalStationDetails } from './modal-station-details';
 import { LoadingInitialCountNetwork } from './loading-initial-count-networks';
 import { useModalStationNetwork } from '../stores/stations-network';
+import { XIcon } from 'lucide-react';
 
 const initialCenterMap = latLng(20.7321944, -28.510347);
 const initialZoom = 3;
@@ -49,8 +50,15 @@ export const Map = () => {
     null,
   );
 
+  // zoom e centro do mapa
+  const [zoomMap, setZoomMap] = useState<number>(initialZoom);
+  const [centerMap, setCenterMap] = useState<LatLng>(initialCenterMap);
+
   //state para salvar dados da station clicaca
   const [stationSelected, setStationSelected] = useState<Station>();
+
+  //pesquisa cidade, rede, estação
+  const [inputSearch, setInputSearch] = useState('');
 
   const {
     isModalOpenNetworkCountry,
@@ -69,10 +77,6 @@ export const Map = () => {
     openModalDetailStation,
     closeModalDetailStation,
   } = useModalDetailStation();
-
-  // zoom e centro do mapa
-  const [zoomMap, setZoomMap] = useState<number>(initialZoom);
-  const [centerMap, setCenterMap] = useState<LatLng>(initialCenterMap);
 
   //req 1 - função para pegar as Networks
   const getNetworks = async () => {
@@ -181,6 +185,33 @@ export const Map = () => {
     closeModalDetailStation();
   };
 
+  //salva a listagem de cidades ou estações que contenham o termo da pesquisa
+  const networkCityList =
+    inputSearch.length > 0
+      ? networks.filter(
+          (rede) =>
+            rede.name.toLowerCase().includes(inputSearch.toLowerCase()) ||
+            rede.location.city
+              .toLowerCase()
+              .includes(inputSearch.toLowerCase()),
+        )
+      : [];
+
+  // console.log('rede name', networkCityList);
+// função a ser chamada ao clicar em algum item da lista de cidades/rede
+  const centerZoomMapa = (network: Network) => {
+    setCenterMap(latLng(network.location.latitude, network.location.longitude));
+    setZoomMap(12);
+    setIsStations(true);
+    getNetworkById(network.id);
+    setInputSearch('');
+  };
+
+  //limpa o input de busca
+  const clearInputSearch = () => {
+    setInputSearch('');
+  };
+
   //1 pegar as estações sempre que inicializar a aplicação
   useEffect(() => {
     getNetworks();
@@ -256,6 +287,51 @@ export const Map = () => {
       <ZoomInOut zoom={zoomMap} />
       {/* modificar o centro do mapa */}
       <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
+
+      <div className="absolute left-16 top-3 z-[1000]">
+        <div className="relative">
+          <input
+            type="text"
+            name="inputSearch"
+            className="w-80 rounded-md px-4 py-2 text-sm outline-none md:w-[28rem] md:text-xl"
+            placeholder="Pesquise por uma cidade ou rede..."
+            onChange={(e) => setInputSearch(e.target.value)}
+            value={inputSearch}
+          />
+
+          <span className="absolute right-2 top-1/2 z-[1500] -translate-y-1/2 cursor-pointer">
+            <XIcon size={16} strokeWidth={4} onClick={clearInputSearch} />
+          </span>
+        </div>
+
+        {/* testar valor do input */}
+        {inputSearch.length > 0 && (
+          <div className="mt-2 w-80 rounded-md bg-white/75 md:w-[28rem]">
+            {/* <p>{inputSearch}</p> */}
+            {networkCityList.length <= 0 ? (
+              <ul className="h-auto max-h-40 rounded-md bg-red-300">
+                <li className="px-3 py-2 text-sm hover:font-bold md:text-xl">
+                  Pesquisa não encontrada!
+                </li>
+              </ul>
+            ) : (
+              <ul className="h-auto max-h-44 overflow-y-auto px-3">
+                {networkCityList.map((item) => {
+                  return (
+                    <li
+                      className="cursor-pointer px-3 py-2 text-sm transition-all duration-500 hover:font-bold md:text-xl"
+                      key={item.id}
+                      onClick={() => centerZoomMapa(item)}
+                    >
+                      {item.name} - {item.location.city}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
     </MapContainer>
   );
 };
