@@ -22,7 +22,7 @@ import { XIcon } from 'lucide-react';
 const initialCenterMap = latLng(20.7321944, -28.510347);
 const initialZoom = 3;
 
-type NetworkPerCountryProps = {
+type NetworkCountryProps = {
   country: string;
   quantity: number;
 };
@@ -31,13 +31,13 @@ export const Map = () => {
   //1 state para armazenar as Networks
   const [networks, setNetworks] = useState<Network[]>([]);
   //state para salvar o array de network per country
-  const [networksPerCountry, setNetworksPerCountry] = useState<
-    NetworkPerCountryProps[]
-  >([]);
+  const [networksCountry, setNetworksCountry] = useState<NetworkCountryProps[]>(
+    [],
+  );
   //state para salvar dados de qty of networks per country, da network clicada
-  const [countrySelected, setCountrySelected] = useState<
-    NetworkPerCountryProps[]
-  >([]);
+  const [countrySelected, setCountrySelected] = useState<NetworkCountryProps[]>(
+    [],
+  );
 
   //state para salvar dados da rede clicada, e pegar as stations
   const [networkDataSelected, setNetworkDataSelected] = useState<Station[]>([]);
@@ -88,27 +88,27 @@ export const Map = () => {
       setNetworks(dataNetwork);
 
       // contabiliza networks por country - retorna um objeto
-      const networksPerCountry: Record<string, number> = {};
+      const networksCountry: Record<string, number> = {};
       for (const network of dataNetwork) {
         const country = network.location.country;
-        if (!networksPerCountry[country]) {
-          networksPerCountry[country] = 1;
+        if (!networksCountry[country]) {
+          networksCountry[country] = 1;
         } else {
-          networksPerCountry[country] = networksPerCountry[country] + 1;
+          networksCountry[country] = networksCountry[country] + 1;
         }
       }
 
       //converte objeto anterior em array
-      const arrNetworksPerArray: NetworkPerCountryProps[] = [];
-      for (const country in networksPerCountry) {
+      const arrNetworksPerArray: NetworkCountryProps[] = [];
+      for (const country in networksCountry) {
         arrNetworksPerArray.push({
           country: country,
-          quantity: networksPerCountry[country],
+          quantity: networksCountry[country],
         });
       }
 
       // console.log('array de pais/networks', arrNetworksPerArray);
-      setNetworksPerCountry(arrNetworksPerArray);
+      setNetworksCountry(arrNetworksPerArray);
     } catch (error) {
       console.log('erro:', error);
     }
@@ -135,7 +135,7 @@ export const Map = () => {
   // função para filtrar o país da network clicada
   const filterCountryNetworkClick = (network: Network) => {
     const country = network.location.country;
-    const countryFiltered = networksPerCountry.filter(
+    const countryFiltered = networksCountry.filter(
       (item) => item.country === country,
     );
     // console.log('país filtrado com qde de redes', countryFiltered);
@@ -143,9 +143,9 @@ export const Map = () => {
   };
 
   //função para alterar o centro do mapa ao clicar numa network
-  const changeCenterMap = (latitude: number, longitude: number) => {
-    setCenterMap(latLng(latitude, longitude));
-  };
+  // const changeCenterMap = (latitude: number, longitude: number) => {
+  //   setCenterMap(latLng(latitude, longitude));
+  // };
 
   const clickNetworkMarker = (network: Network) => {
     openModalNetworkCountry();
@@ -153,13 +153,11 @@ export const Map = () => {
     setZoomMap(12);
 
     const { latitude, longitude } = network.location;
-    changeCenterMap(latitude, longitude);
-
-    filterCountryNetworkClick(network);
-
-    getNetworkById(network.id);
+    setCenterMap(latLng(latitude, longitude));
 
     setIsStations(true);
+    filterCountryNetworkClick(network);
+    getNetworkById(network.id);
   };
 
   const handleClickStationDetails = (idStation: string) => {
@@ -198,13 +196,17 @@ export const Map = () => {
       : [];
 
   // console.log('rede name', networkCityList);
-// função a ser chamada ao clicar em algum item da lista de cidades/rede
-  const centerZoomMapa = (network: Network) => {
+  // função a ser chamada ao clicar em algum item da lista de cidades/rede
+  const clickListNetworkCity = (network: Network) => {
     setCenterMap(latLng(network.location.latitude, network.location.longitude));
     setZoomMap(12);
     setIsStations(true);
     getNetworkById(network.id);
     setInputSearch('');
+    openModalNetworkCountry();
+    openModalStationNetwork();
+    closeModalDetailStation();
+    filterCountryNetworkClick(network);
   };
 
   //limpa o input de busca
@@ -321,7 +323,7 @@ export const Map = () => {
                     <li
                       className="cursor-pointer px-3 py-2 text-sm transition-all duration-500 hover:font-bold md:text-xl"
                       key={item.id}
-                      onClick={() => centerZoomMapa(item)}
+                      onClick={() => clickListNetworkCity(item)}
                     >
                       {item.name} - {item.location.city}
                     </li>
