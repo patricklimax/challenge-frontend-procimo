@@ -27,25 +27,23 @@ type NetworkCountryProps = {
   quantity: number;
 };
 
+const url = 'http://api.citybik.es/v2/networks';
+
 export const Map = () => {
   //1 state para armazenar as Networks
   const [networks, setNetworks] = useState<Network[]>([]);
   //state para salvar o array de network per country
-  const [networksCountry, setNetworksCountry] = useState<NetworkCountryProps[]>(
-    [],
-  );
+  const [networksCountry, setNetworksCountry] = useState<NetworkCountryProps[]>([]);
   //state para salvar dados de qty of networks per country, da network clicada
-  const [countrySelected, setCountrySelected] = useState<NetworkCountryProps[]>(
-    [],
-  );
+  const [countrySelected, setCountrySelected] = useState<NetworkCountryProps[]>([]);
 
   //state para salvar dados da rede clicada, e pegar as stations
-  const [networkDataSelected, setNetworkDataSelected] = useState<Station[]>([]);
+  const [stationsOfNetwork, setStationsOfNetwork] = useState<Station[]>([]);
   const [isStations, setIsStations] = useState(false);
 
-  const [qtyStationPerNetwork, setQtyStationPerNetwork] = useState<
-    number | null
-  >(null);
+  const [qtyStationPerNetwork, setQtyStationPerNetwork] = useState<number | null>(
+    null,
+  );
   const [nameNetworkSelected, setNameNetworkSelected] = useState<string | null>(
     null,
   );
@@ -59,6 +57,7 @@ export const Map = () => {
 
   //pesquisa cidade, rede, estação
   const [inputSearch, setInputSearch] = useState('');
+  const [scrollZoomMap, setScrollZoomMap] = useState<boolean>(true);
 
   const {
     isModalOpenNetworkCountry,
@@ -81,7 +80,7 @@ export const Map = () => {
   //req 1 - função para pegar as Networks
   const getNetworks = async () => {
     try {
-      const response = await axios.get('http://api.citybik.es/v2/networks');
+      const response = await axios.get(url);
       const dataNetwork: Network[] = await response.data.networks;
       // console.log('Dados Networks:', dataNetwork);
       // console.log('Quantity Networks:', dataNetwork.length);
@@ -116,12 +115,10 @@ export const Map = () => {
 
   //req 2 - função para pegar network pelo id
   const getNetworkById = async (idNetwork: string) => {
-    const response = await axios.get(
-      `http://api.citybik.es/v2/networks/${idNetwork}`,
-    );
+    const response = await axios.get(`${url}/${idNetwork}`);
     const networkSelected: Network = response.data.network;
     // console.log('dados da rede selecionada', networkSelected);
-    setNetworkDataSelected(networkSelected.stations);
+    setStationsOfNetwork(networkSelected.stations);
 
     const qtyStationPerNetwork = networkSelected.stations.length;
     // console.log('qde de estações da rede selecionda:', qtyStationPerNetwork);
@@ -158,12 +155,14 @@ export const Map = () => {
     setIsStations(true);
     filterCountryNetworkClick(network);
     getNetworkById(network.id);
+    setInputSearch('');
   };
 
   const handleClickStationDetails = (idStation: string) => {
+    setInputSearch('');
     openModalDetailStation();
 
-    const stationDataSelected = networkDataSelected.find(
+    const stationDataSelected = stationsOfNetwork.find(
       (station) => station.id === idStation,
     );
     // console.log('dados da station selecionada', stationDataSelected);
@@ -189,9 +188,7 @@ export const Map = () => {
       ? networks.filter(
           (rede) =>
             rede.name.toLowerCase().includes(inputSearch.toLowerCase()) ||
-            rede.location.city
-              .toLowerCase()
-              .includes(inputSearch.toLowerCase()),
+            rede.location.city.toLowerCase().includes(inputSearch.toLowerCase()),
         )
       : [];
 
@@ -220,76 +217,77 @@ export const Map = () => {
   }, []);
 
   return (
-    <MapContainer
-      className="relative h-[calc(100vh-3rem)] w-full"
-      center={initialCenterMap}
-      zoom={zoomMap}
-      scrollWheelZoom={true}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {/* renderizar marcadores de rede no mapa */}
-      {networks.map((network) => (
-        <NetworkMarker
-          key={network.id}
-          networkData={network}
-          onClick={clickNetworkMarker}
+    <>
+      <MapContainer
+        className="relative h-[calc(100vh-3rem)] w-full"
+        center={initialCenterMap}
+        zoom={zoomMap}
+        scrollWheelZoom={scrollZoomMap}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-      ))}
-      {/* marcadores das estações da rede selecionada */}
-      {isStations &&
-        networkDataSelected.map((station) => (
-          <StationMarker
-            key={station.id}
-            dataStation={station}
-            onClick={handleClickStationDetails}
+        {/* renderizar marcadores de rede no mapa */}
+        {networks.map((network) => (
+          <NetworkMarker
+            key={network.id}
+            networkData={network}
+            onClick={clickNetworkMarker}
           />
         ))}
-      {/* área dos modais */}
-      <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
-        {/* modal com a quantidade de redes por país */}
-        {isModalOpenNetworkCountry && (
-          <ModalNetworksCountry
-            onClick={closeModalNetworkAndStation}
-            country={countrySelected[0].country}
-            qtyNetworks={countrySelected[0].quantity}
-          />
-        )}
+        {/* marcadores das estações da rede selecionada */}
+        {isStations &&
+          stationsOfNetwork.map((station) => (
+            <StationMarker
+              key={station.id}
+              dataStation={station}
+              onClick={handleClickStationDetails}
+            />
+          ))}
+        {/* área dos modais */}
+        <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
+          {/* modal com a quantidade de redes por país */}
+          {isModalOpenNetworkCountry && (
+            <ModalNetworksCountry
+              onClick={closeModalNetworkAndStation}
+              country={countrySelected[0].country}
+              qtyNetworks={countrySelected[0].quantity}
+            />
+          )}
 
-        {/* modal com a quantidade de estações por rede */}
-        {isModalOpenStationNetwork && (
-          <ModalStationsNetwork
-            networkName={nameNetworkSelected}
-            qtyStations={qtyStationPerNetwork}
-            onClick={closeModalNetworkAndStation}
-          />
-        )}
+          {/* modal com a quantidade de estações por rede */}
+          {isModalOpenStationNetwork && (
+            <ModalStationsNetwork
+              networkName={nameNetworkSelected}
+              qtyStations={qtyStationPerNetwork}
+              onClick={closeModalNetworkAndStation}
+            />
+          )}
 
-        {/* loading antes do carregamento das redes  */}
-        {networks.length === 0 ? (
-          <LoadingInitialCountNetwork statusphrase={'Loading networks...'} />
-        ) : (
-          <LoadingInitialCountNetwork
-            statusphrase={`Number of networks around the world: ${networks.length}`}
-          />
-        )}
-      </div>
-      {/* // todo: mandar as informações da estação clicada */}
-      {isModalOpenDetailStation && stationSelected && (
-        <div className="absolute bottom-20 right-4 z-[1000]">
-          <ModalStationDetails
-            station={stationSelected}
-            onClick={closeModalStationDetails}
-          />
+          {/* loading antes do carregamento das redes  */}
+          {networks.length === 0 ? (
+            <LoadingInitialCountNetwork statusphrase={'Loading networks...'} />
+          ) : (
+            <LoadingInitialCountNetwork
+              statusphrase={`Number of networks around the world: ${networks.length}`}
+            />
+          )}
         </div>
-      )}
-      {/* modificar o zoom do mapa */}
-      <ZoomInOut zoom={zoomMap} />
-      {/* modificar o centro do mapa */}
-      <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
-
+        {/* // todo: mandar as informações da estação clicada */}
+        {isModalOpenDetailStation && stationSelected && (
+          <div className="absolute bottom-20 right-4 z-[1000]">
+            <ModalStationDetails
+              station={stationSelected}
+              onClick={closeModalStationDetails}
+            />
+          </div>
+        )}
+        {/* modificar o zoom do mapa */}
+        <ZoomInOut zoom={zoomMap} />
+        {/* modificar o centro do mapa */}
+        <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
+      </MapContainer>
       <div className="absolute left-16 top-3 z-[1000]">
         <div className="relative">
           <input
@@ -311,13 +309,21 @@ export const Map = () => {
           <div className="mt-2 w-80 rounded-md bg-white/75 md:w-[28rem]">
             {/* <p>{inputSearch}</p> */}
             {networkCityList.length <= 0 ? (
-              <ul className="h-auto max-h-40 rounded-md bg-red-300">
+              <ul
+                className="h-auto max-h-40 rounded-md bg-red-300"
+                onMouseEnter={() => setScrollZoomMap(false)}
+                onMouseLeave={() => setScrollZoomMap(true)}
+              >
                 <li className="px-3 py-2 text-sm hover:font-bold md:text-xl">
                   Pesquisa não encontrada!
                 </li>
               </ul>
             ) : (
-              <ul className="h-auto max-h-44 overflow-y-auto px-3">
+              <ul
+                className="h-auto max-h-44 overflow-y-auto px-3"
+                onMouseEnter={() => setScrollZoomMap(false)}
+                onMouseLeave={() => setScrollZoomMap(true)}
+              >
                 {networkCityList.map((item) => {
                   return (
                     <li
@@ -334,6 +340,6 @@ export const Map = () => {
           </div>
         )}
       </div>
-    </MapContainer>
+    </>
   );
 };

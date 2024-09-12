@@ -75,12 +75,12 @@ Projeto foi arquitetado usando o mapa de atividades abaixo:
 
 # Sistema de Busca:
 
-[] Criar sistema de busca, pelo nome da cidade, nome da rede ou estação [tarefa 4, do desafio]<br />
---- [] Ao inserir a pesquisa: cidade, rede ou estação:<br />
----- [] Gerar lista de sugestões;<br />
------ [] Ao clicar numa sugestão:<br />
------- [] dar zoom no mapa;<br />
------- [] centralizar mapa com as coordenadas da rede/estação;<br />
+[x] Criar sistema de busca, pelo nome da cidade, nome da rede ou estação [tarefa 4, do desafio]<br />
+--- [x] Ao inserir a pesquisa: cidade, rede <del>ou estação<del/>:<br />
+---- [x] Gerar lista de sugestões;<br />
+----- [x] Ao clicar numa sugestão:<br />
+------ [x] dar zoom no mapa;<br />
+------ [x] centralizar mapa com as coordenadas da rede/estação;<br />
 
 # Tecnologias Utilizadas
 
