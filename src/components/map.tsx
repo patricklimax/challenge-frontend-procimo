@@ -27,7 +27,7 @@ type NetworkCountryProps = {
   quantity: number;
 };
 
-const url = 'http://api.citybik.es/v2/networks';
+const url = 'https://api.citybik.es/v2/networks';
 
 export const Map = () => {
   //1 state para armazenar as Networks
@@ -96,6 +96,8 @@ export const Map = () => {
           networksCountry[country] = networksCountry[country] + 1;
         }
       }
+
+      console.log('dados...', networksCountry)
 
       //converte objeto anterior em array
       const arrNetworksPerArray: NetworkCountryProps[] = [];
