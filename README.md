@@ -134,6 +134,9 @@ Este Componente exibe os marcadores referente a cada rede no mapa. São exibidos
 
 Este Componente exibe os marcadores referente a cada estação no mapa. São exibidos sempre que a uma determinada rede é clicada.
 
+### Sistema de Busca
+Foi criado um sistema de busca. Usuário deve digitar uma busca referente ao nome de uma cidade ou nome de uma rede.
+
 ## Instalação
 
 Como Rodar o Projeto Localmente
