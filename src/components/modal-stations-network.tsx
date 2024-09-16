@@ -20,7 +20,7 @@ export const ModalStationsNetwork = ({
       <div className="px-2 font-bold">
         <p className="uppercase">Network: {networkName}</p>
         <p className="font-medium">
-          {qtyStations} station(s) install(ed) in this network.
+          {qtyStations} estação(es) instalada(s) nesta rede.
         </p>
       </div>
     </div>

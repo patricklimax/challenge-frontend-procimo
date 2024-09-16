@@ -28,7 +28,7 @@ export const StationMarker = ({ dataStation, onClick }: StationMarkerProps) => {
       <Tooltip>
         <div className="bg-white text-center">
           <p className="p-1 text-lg font-semibold">
-            Station: {dataStation.name}
+            Nome da Estação: {dataStation.name}
           </p>
           <p className="px-2 py-1 text-xs font-medium">
             Clique na estação para ver detalhes.

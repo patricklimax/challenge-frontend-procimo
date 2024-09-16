@@ -5,7 +5,7 @@ import IconStation from '../assets/bike.svg';
 export const UserManual = () => {
   return (
     <div id="userManual" className="mx-auto mt-52 w-full px-4 md:mt-0 md:max-w-5xl">
-      <h2 className="py-4 text-center text-3xl font-bold">Manual do Usuário</h2>
+      <h2 className="py-4 text-center text-3xl font-bold">Dicas de Uso</h2>
       <div className="flex flex-col gap-2">
         <p className="border-l-2 border-emerald-600 px-2 py-1">
           O projeto é uma aplicação web desenvolvida com ReactJS e TypeScript para
@@ -143,7 +143,7 @@ export const UserManual = () => {
             </div>
             <p className="flex-1">
               No campo de busca, você pode fazer sua busca pelo nome da cidade ou
-              estação.
+              nome da rede.
             </p>
           </li>
         </ul>

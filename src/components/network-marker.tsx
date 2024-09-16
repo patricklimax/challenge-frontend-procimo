@@ -29,9 +29,9 @@ export const NetworkMarker = ({
       <Tooltip>
         <div className="rounded-md border px-2 py-1 text-center">
           <p className="font-semibold">
-            Country - {networkData.location.country}
+            País - {networkData.location.country}
           </p>
-          <p className="mt-2">{networkData.name}</p>
+          <p className="mt-2">Rede: {networkData.name}</p>
         </div>
       </Tooltip>
     </Marker>

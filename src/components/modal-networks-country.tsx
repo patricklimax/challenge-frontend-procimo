@@ -20,7 +20,7 @@ export const ModalNetworksCountry = ({
       <div className="px-2 font-bold">
         <p className="uppercase">{country}</p>
         <p className="font-medium">
-          {qtyNetworks} network(s) install(ed) in the country.
+          {qtyNetworks} rede(s) instalada(s) neste país.
         </p>
       </div>
     </div>
