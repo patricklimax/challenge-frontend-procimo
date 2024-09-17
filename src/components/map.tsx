@@ -232,7 +232,7 @@ export const Map = () => {
   return (
     <>
       <MapContainer
-        className="relative h-[calc(100vh-3rem)] w-full"
+        className="w-[calc(100vw-1rem] relative h-[calc(100vh-4rem)]"
         center={initialCenterMap}
         zoom={zoomMap}
         scrollWheelZoom={scrollZoomMap}
@@ -259,7 +259,7 @@ export const Map = () => {
             />
           ))}
         {/* área dos modais */}
-        <div className="absolute bottom-2 left-2 z-[1000] flex flex-col gap-2">
+        <div className="absolute bottom-6 md:bottom-3 left-2 z-[1000] flex flex-col gap-2">
           {/* modal com a quantidade de redes por país */}
           {isModalOpenNetworkCountry && (
             <ModalNetworksCountry
@@ -302,11 +302,11 @@ export const Map = () => {
         <CenterMap latitude={centerMap.lat} longitude={centerMap.lng} />
       </MapContainer>
       <div className="absolute left-16 top-3 z-[1000]">
-        <div className="relative">
+        <div className="relative w-72 md:w-full">
           <input
             type="text"
             name="inputSearch"
-            className="w-80 rounded-md px-4 py-2 text-sm outline-none md:w-[28rem] md:text-xl"
+            className="w-full rounded-md px-4 py-2 text-sm outline-none md:w-[28rem] md:text-xl"
             placeholder="Pesquise por uma cidade ou rede..."
             onChange={(e) => setInputSearch(e.target.value)}
             value={inputSearch}

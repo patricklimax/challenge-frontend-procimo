@@ -16,12 +16,12 @@ export const ModalStationDetails = ({
         <XIcon className="m-1 stroke-1" size={18} onClick={onClick} />
       </div>
       <div className="flex flex-col gap-2 px-4">
-        <h2 className="text-center text-lg font-semibold">Station Name: {station.name}</h2>
+        <h2 className="text-center text-lg font-semibold">Nome da Estação: {station.name}</h2>
         <div>
           <p>Bicicletas livres: {station.free_bikes}</p>
           <p>Slots vazios: {station.empty_slots}</p>
           <p>
-            Coordenadas: ({station.latitude}, {station.longitude})
+            Coordenadas: (Latitude: {station.latitude}, Longitude: {station.longitude})
           </p>
           <p>Time Stamp: {station.timestamp}</p>
         </div>

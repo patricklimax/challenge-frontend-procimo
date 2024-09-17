@@ -4,7 +4,7 @@ import IconStation from '../assets/bike.svg';
 
 export const UserManual = () => {
   return (
-    <div id="userManual" className="mx-auto mt-52 w-full px-4 md:mt-0 md:max-w-5xl">
+    <div id="userManual" className="mx-auto w-full px-4 md:max-w-5xl">
       <h2 className="py-4 text-center text-3xl font-bold">Dicas de Uso</h2>
       <div className="flex flex-col gap-2">
         <p className="border-l-2 border-emerald-600 px-2 py-1">
