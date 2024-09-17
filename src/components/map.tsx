@@ -97,7 +97,7 @@ export const Map = () => {
         }
       }
 
-      console.log('dados...', networksCountry)
+      // console.log('dados...', networksCountry)
 
       //converte objeto anterior em array
       const arrNetworksPerArray: NetworkCountryProps[] = [];
@@ -213,9 +213,20 @@ export const Map = () => {
     setInputSearch('');
   };
 
+  // alterar zoom conforme o tamanho da tela
+  const modifyZoomWithWidthWindow = () => {
+    const widthWindow = window.innerWidth;
+    if (widthWindow < 576) {
+      setZoomMap(2);
+    } else {
+      setZoomMap(initialZoom);
+    }
+  };
+
   //1 pegar as estações sempre que inicializar a aplicação
   useEffect(() => {
     getNetworks();
+    modifyZoomWithWidthWindow();
   }, []);
 
   return (
